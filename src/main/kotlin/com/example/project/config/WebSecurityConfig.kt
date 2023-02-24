@@ -11,6 +11,10 @@ import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.provisioning.InMemoryUserDetailsManager
 import org.springframework.security.web.SecurityFilterChain
 
+/**
+ * この記事を参考に実装
+ * https://zenn.dev/jinwatanabe/articles/c3860019dbf522
+ * */
 
 @Configuration
 @EnableWebSecurity
