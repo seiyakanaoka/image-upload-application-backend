@@ -14,9 +14,14 @@ create table if not exists product (
 ) engine=innodb default charset=utf8mb4 comment='商品テーブル';
 
 create table if not exists user (
-  id int(11) not null auto_increment,
-  email varchar(255) not null,
-  password varchar(255) not null,
-  role_type varchar(32) not null,
+  id bigint(20) unsigned not null auto_increment comment 'id',
+  email varchar(255) not null comment 'E-mail',
+  password varchar(255) not null comment 'パスワード',
+  primary key (`id`)
+);
+
+create table if not exists token (
+  id bigint(20) unsigned not null auto_increment comment 'id',
+  token varchar(255) comment 'トークン',
   primary key (`id`)
 );

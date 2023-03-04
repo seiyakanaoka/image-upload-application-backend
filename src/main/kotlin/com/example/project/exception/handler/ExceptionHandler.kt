@@ -3,6 +3,7 @@ package com.example.project.exception.handler
 import com.example.project.error.ApplicationError
 import com.example.project.error.FieldError
 import com.example.project.exception.TitleExistException
+import com.example.project.exception.UserNotExistsException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
 import org.apache.commons.logging.LogFactory
@@ -15,8 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import java.lang.NullPointerException
-import java.lang.NumberFormatException
+import org.springframework.web.client.HttpClientErrorException.Unauthorized
 
 @RestControllerAdvice
 class ExceptionHandler {
@@ -40,6 +40,24 @@ class ExceptionHandler {
         val fieldErrors = listOf<FieldError>(fieldError)
 
         val error = ApplicationError("入力エラー発生", HttpStatus.BAD_REQUEST.value(), request.method, fieldErrors);
+
+        return ResponseEntity<ApplicationError>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 400 Error　独自例外
+     * タイトルが既にDBに存在する場合に発生
+     * */
+    @ExceptionHandler(UserNotExistsException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    fun userNotExistException(
+        request: HttpServletRequest,
+        ex: TitleExistException
+    ): ResponseEntity<ApplicationError> {
+        log.error(ex)
+
+        val error = ex.message?.let { ApplicationError(it, HttpStatus.BAD_REQUEST.value(), request.method) };
 
         return ResponseEntity<ApplicationError>(error, HttpStatus.BAD_REQUEST);
     }
@@ -87,6 +105,25 @@ class ExceptionHandler {
         val error = ApplicationError("入力エラー発生", HttpStatus.BAD_REQUEST.value(), request.method, fieldErrors);
 
         return ResponseEntity<ApplicationError>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 400 Error
+     * Entityの制約違反の場合の例外
+     * @valid, @RequestBodyがある場合のバリデーションで発生
+     * */
+    @ExceptionHandler(Unauthorized::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    fun unauthorizedException(
+        request: HttpServletRequest,
+        ex: Unauthorized
+    ): ResponseEntity<ApplicationError> {
+        log.error(ex)
+
+        val error = ex.message?.let { ApplicationError(it, HttpStatus.BAD_REQUEST.value(), request.method) };
+
+        return ResponseEntity<ApplicationError>(error, HttpStatus.UNAUTHORIZED);
     }
 
     /**
