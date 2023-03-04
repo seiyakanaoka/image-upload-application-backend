@@ -1,5 +1,6 @@
 package com.example.project.user.service
 
+import com.example.project.exception.UserNotExistsException
 import com.example.project.token.entity.Token
 import com.example.project.token.repository.TokenRepository
 import com.example.project.user.entity.User
@@ -14,19 +15,16 @@ class UserService(private val userRepository: UserRepository, private val tokenR
     /**
      * ユーザーを取得する
      * */
-    fun getUser(user: User): User = userRepository.findByEmailAndPassword(user.email, user.password)
+    fun getUser(user: User): User? = userRepository.findByEmailAndPassword(user.email, user.password)
 
 
     /**
      * ユーザーが存在した場合、JWTトークンを返却する
      * */
     fun createCertification(user: User): String {
-        val existUser = getUser(user)
-        if (existUser == null) {
-        }
-        val jwtToken = JWTUtil().createJWTToken(user)
+        val existUser = getUser(user) ?: throw UserNotExistsException(400, "ユーザーが存在しません。新規登録してください。")
+        val jwtToken = JWTUtil().createJWTToken(existUser)
         val token = Token(1, jwtToken)
-        println("token : $token")
         tokenRepository.save(token)
         return jwtToken
     }
