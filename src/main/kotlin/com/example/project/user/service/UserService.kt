@@ -17,6 +17,11 @@ class UserService(private val userRepository: UserRepository, private val tokenR
      * */
     fun getUser(user: User): User? = userRepository.findByEmailAndPassword(user.email, user.password)
 
+    /**
+     * ユーザーを、id検索する
+     * */
+    fun findById(userId: Long): User = userRepository.findById(userId).orElseThrow()
+
 
     /**
      * ユーザーが存在した場合、JWTトークンを返却する

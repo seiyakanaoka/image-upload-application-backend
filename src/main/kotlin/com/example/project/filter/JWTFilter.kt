@@ -1,7 +1,6 @@
 package com.example.project.filter
 
 import com.example.project.user.service.UserService
-import com.example.project.util.JWTUtil
 import jakarta.servlet.Filter
 import jakarta.servlet.FilterChain
 import jakarta.servlet.ServletRequest
@@ -30,11 +29,9 @@ class JWTFilter(private val userService: UserService) : Filter {
         if (token == "") {
             response?.sendError(HttpServletResponse.SC_UNAUTHORIZED, "ログインしていません。")
             return;
+        } else {
+            chain?.doFilter(servletRequest, servletResponse);
         }
-//        val user = userService.
-        val decodeToken = JWTUtil().decodeToken(token)
-        println("aaa  ${decodeToken?.subject}")
-        chain?.doFilter(servletRequest, servletResponse);
 
     }
 
