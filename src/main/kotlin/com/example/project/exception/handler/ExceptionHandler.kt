@@ -15,8 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseBody
 import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestControllerAdvice
-import java.lang.NullPointerException
-import java.lang.NumberFormatException
+import org.springframework.web.client.HttpClientErrorException.Unauthorized
 
 @RestControllerAdvice
 class ExceptionHandler {
@@ -87,6 +86,25 @@ class ExceptionHandler {
         val error = ApplicationError("入力エラー発生", HttpStatus.BAD_REQUEST.value(), request.method, fieldErrors);
 
         return ResponseEntity<ApplicationError>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 400 Error
+     * Entityの制約違反の場合の例外
+     * @valid, @RequestBodyがある場合のバリデーションで発生
+     * */
+    @ExceptionHandler(Unauthorized::class)
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    fun unauthorizedException(
+        request: HttpServletRequest,
+        ex: Unauthorized
+    ): ResponseEntity<ApplicationError> {
+        log.error(ex)
+
+        val error = ex.message?.let { ApplicationError(it, HttpStatus.BAD_REQUEST.value(), request.method) };
+
+        return ResponseEntity<ApplicationError>(error, HttpStatus.UNAUTHORIZED);
     }
 
     /**

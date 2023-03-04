@@ -19,3 +19,9 @@ create table if not exists user (
   password varchar(255) not null comment 'パスワード',
   primary key (`id`)
 );
+
+create table if not exists token (
+  id bigint(20) unsigned not null auto_increment comment 'id',
+  token varchar(255) comment 'トークン',
+  primary key (`id`)
+);
