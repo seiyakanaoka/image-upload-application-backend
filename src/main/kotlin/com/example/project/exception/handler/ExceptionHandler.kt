@@ -3,6 +3,7 @@ package com.example.project.exception.handler
 import com.example.project.error.ApplicationError
 import com.example.project.error.FieldError
 import com.example.project.exception.TitleExistException
+import com.example.project.exception.UserExistsException
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.validation.ConstraintViolationException
 import org.apache.commons.logging.LogFactory
@@ -39,6 +40,24 @@ class ExceptionHandler {
         val fieldErrors = listOf<FieldError>(fieldError)
 
         val error = ApplicationError("入力エラー発生", HttpStatus.BAD_REQUEST.value(), request.method, fieldErrors);
+
+        return ResponseEntity<ApplicationError>(error, HttpStatus.BAD_REQUEST);
+    }
+
+    /**
+     * 400 Error　独自例外
+     * タイトルが既にDBに存在する場合に発生
+     * */
+    @ExceptionHandler(UserExistsException::class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    fun userExistException(
+        request: HttpServletRequest,
+        ex: TitleExistException
+    ): ResponseEntity<ApplicationError> {
+        log.error(ex)
+
+        val error = ex.message?.let { ApplicationError(it, HttpStatus.BAD_REQUEST.value(), request.method) };
 
         return ResponseEntity<ApplicationError>(error, HttpStatus.BAD_REQUEST);
     }
