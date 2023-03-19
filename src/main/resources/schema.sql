@@ -25,3 +25,9 @@ create table if not exists token (
   token varchar(255) comment 'トークン',
   primary key (`id`)
 );
+
+create table if not exists aws_s3 (
+  id bigint(20) unsigned not null auto_increment comment 'id',
+  image_prefix varchar(255) comment '画像の接頭辞(画像取得時の判別に使用)',
+  primary key (`id`)
+);
