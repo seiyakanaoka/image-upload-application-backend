@@ -6,13 +6,13 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class AWSS3Config {
+class AwsS3Config {
     /**
      * ローカルからクレデンシャル情報を取得してS3を操作する設定
      * ConfigにS3クライアントを設定することで、DIで使用することができる
      * */
     @Bean
-    fun s3client(): AmazonS3 {
+    fun s3Client(): AmazonS3 {
         return AmazonS3ClientBuilder.defaultClient()
     }
 }

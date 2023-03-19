@@ -3,7 +3,7 @@ package com.example.project.aws.s3.service
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
-import com.example.project.config.aws.AWSS3Config
+import com.example.project.config.aws.AwsS3Config
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
 import java.io.ByteArrayInputStream
@@ -11,9 +11,9 @@ import java.net.URL
 import java.util.*
 
 @Service
-class AWSS3Service(private val awsS3Config: AWSS3Config) {
+class AwsS3Service(private val awsS3Config: AwsS3Config) {
 
-    private val s3Client = awsS3Config.s3client()
+    private val s3Client = awsS3Config.s3Client()
 
     private val bucketName = "test-template-2023-03-05"
 
