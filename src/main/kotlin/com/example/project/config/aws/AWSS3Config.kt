@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
 @Configuration
-class S3Config {
+class AWSS3Config {
     /**
      * ローカルからクレデンシャル情報を取得してS3を操作する設定
      * ConfigにS3クライアントを設定することで、DIで使用することができる
