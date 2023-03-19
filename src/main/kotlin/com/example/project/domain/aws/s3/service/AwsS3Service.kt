@@ -16,7 +16,7 @@ class AwsS3Service(private val awsS3Config: AwsS3Config) {
 
   private val s3Client = awsS3Config.s3Client()
 
-  @Value("\${amazon.aws.s3.image.bucketName}")
+  @Value("\${aws.s3.image.bucketName}")
   private val bucketName = ""
 
   /**

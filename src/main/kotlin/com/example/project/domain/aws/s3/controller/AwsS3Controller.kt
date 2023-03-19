@@ -10,8 +10,8 @@ import org.springframework.web.multipart.MultipartFile
 @RestController
 class AwsS3Controller(private val awsS3Service: AwsS3Service) {
   @GetMapping("/image")
-  fun getImage(@RequestParam("objectKey", required = true) objectKey: String) {
-    awsS3Service.getImageURL(objectKey)
+  fun getImage(@RequestParam("objectKey", required = true) objectKey: String): String {
+    return awsS3Service.getImageURL(objectKey)
   }
 
   @PostMapping("/image")
