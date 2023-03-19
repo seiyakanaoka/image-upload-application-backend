@@ -13,3 +13,7 @@ spring:
       mode: always
 cors:
   originPatterns: http://localhost:3000/
+aws:
+  s3:
+    image:
+      bucketName: test-template-2023-03-05
