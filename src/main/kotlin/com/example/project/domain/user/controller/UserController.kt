@@ -1,5 +1,6 @@
 package com.example.project.domain.user.controller
 
+import com.example.project.domain.token.dto.TokenDto
 import com.example.project.domain.user.entity.User
 import com.example.project.domain.user.service.UserService
 import lombok.RequiredArgsConstructor
@@ -19,7 +20,7 @@ class UserController(private val userService: UserService) {
    * @param user
    * */
   @PostMapping("/login")
-  fun userLogin(@RequestBody user: User): String {
+  fun userLogin(@RequestBody user: User): TokenDto {
     return userService.createCertification(user)
   }
 }

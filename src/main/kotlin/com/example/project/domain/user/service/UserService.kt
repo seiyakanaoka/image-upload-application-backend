@@ -1,5 +1,6 @@
 package com.example.project.domain.user.service
 
+import com.example.project.domain.token.dto.TokenDto
 import com.example.project.domain.token.entity.Token
 import com.example.project.domain.token.repository.TokenRepository
 import com.example.project.domain.user.entity.User
@@ -26,11 +27,11 @@ class UserService(private val userRepository: UserRepository, private val tokenR
   /**
    * ユーザーが存在した場合、JWTトークンを返却する
    * */
-  fun createCertification(user: User): String {
+  fun createCertification(user: User): TokenDto {
     val existUser = getUser(user) ?: throw UserNotExistsException(400, "ユーザーが存在しません。新規登録してください。")
     val jwtToken = JWTUtil().createJWTToken(existUser)
     val token = Token(1, jwtToken)
     tokenRepository.save(token)
-    return jwtToken
+    return TokenDto(jwtToken)
   }
 }

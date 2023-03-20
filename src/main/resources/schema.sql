@@ -1,6 +1,6 @@
-create database if not exists project202302;
+create database if not exists image_upload_application;
 
-use project202302;
+use image_upload_application;
 
 create table if not exists product (
   id bigint(20) unsigned not null auto_increment comment 'id',

@@ -4,6 +4,8 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
 import com.example.project.config.aws.AwsS3Config
+import com.example.project.domain.aws.s3.entity.AwsS3
+import com.example.project.domain.aws.s3.repository.AwsS3Repository
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -12,7 +14,7 @@ import java.net.URL
 import java.util.*
 
 @Service
-class AwsS3Service(private val awsS3Config: AwsS3Config) {
+class AwsS3Service(private val awsS3Config: AwsS3Config, private val awsS3Repository: AwsS3Repository) {
 
   private val s3Client = awsS3Config.s3Client()
 
@@ -45,10 +47,12 @@ class AwsS3Service(private val awsS3Config: AwsS3Config) {
     metadata.contentType = multipartFile.contentType
 
     val inputStream = ByteArrayInputStream(multipartFile.bytes)
-    val objectKey = prefix + UUID.randomUUID().toString()
+    val objectKey = prefix + "-" + UUID.randomUUID().toString()
 
     val request = PutObjectRequest(bucketName, objectKey, inputStream, metadata)
     s3Client.putObject(request)
     s3Client.shutdown()
+    val awsS3 = AwsS3(0, objectKey)
+    awsS3Repository.save(awsS3)
   }
 }
