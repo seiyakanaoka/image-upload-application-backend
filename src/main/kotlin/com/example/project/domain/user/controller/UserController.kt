@@ -4,10 +4,7 @@ import com.example.project.domain.token.dto.TokenDto
 import com.example.project.domain.user.entity.User
 import com.example.project.domain.user.service.UserService
 import lombok.RequiredArgsConstructor
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RestController
+import org.springframework.web.bind.annotation.*
 import java.util.*
 
 
@@ -22,5 +19,15 @@ class UserController(private val userService: UserService) {
   @PostMapping("/login")
   fun userLogin(@RequestBody user: User): TokenDto {
     return userService.createCertification(user)
+  }
+
+  /**
+   * ユーザーに紐付いたトークンを取得する
+   * @param user
+   * */
+  @GetMapping("/user/{id}/tokens")
+  fun userTokens(@PathVariable id: Long) {
+    println("通った？ : $id")
+    userService.getUserTokens(id)
   }
 }

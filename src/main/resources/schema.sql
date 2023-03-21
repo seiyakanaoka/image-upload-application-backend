@@ -23,6 +23,7 @@ create table if not exists user (
 create table if not exists token (
   id bigint(20) unsigned not null auto_increment comment 'id',
   token varchar(255) comment 'トークン',
+  user_id bigint(20) not null comment 'ユーザーID',
   primary key (`id`)
 );
 

@@ -30,8 +30,16 @@ class UserService(private val userRepository: UserRepository, private val tokenR
   fun createCertification(user: User): TokenDto {
     val existUser = getUser(user) ?: throw UserNotExistsException(400, "ユーザーが存在しません。新規登録してください。")
     val jwtToken = JWTUtil().createJWTToken(existUser)
-    val token = Token(1, jwtToken)
+    val token = Token(1, jwtToken, existUser)
     tokenRepository.save(token)
     return TokenDto(jwtToken)
+  }
+
+  /**
+   * ユーザーに紐付いたトークン一覧を取得する
+   * inner joinの練習用
+   * */
+  fun getUserTokens(id: Long): List<Token> {
+    return userRepository.findUserAndTokens(1)
   }
 }
