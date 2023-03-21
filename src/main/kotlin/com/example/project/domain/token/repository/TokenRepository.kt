@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.stereotype.Repository
 
 @Repository
-interface TokenRepository : JpaRepository<Token, Long> {
+interface TokenRepository : JpaRepository<Token, String> {
   fun existsByToken(token: String): Boolean
 }

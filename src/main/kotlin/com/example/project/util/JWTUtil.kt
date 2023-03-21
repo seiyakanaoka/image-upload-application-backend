@@ -4,6 +4,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.auth0.jwt.interfaces.DecodedJWT
 import com.example.project.domain.user.entity.User
+import java.util.*
 
 class JWTUtil {
   /**
@@ -11,11 +12,11 @@ class JWTUtil {
    */
   fun createJWTToken(user: User): String {
     val secretKey = "secret"
-    println("")
+    val uuid = UUID.randomUUID().toString()
     return JWT.create()
       .withSubject(user.id.toString())
       .withIssuer("kanaokaseiya") //発行者
-      .withClaim("username", user.email) //keyに対してvalueの設定。汎用的な様々な値を保持できる
+      .withClaim("username", "${user.email}-$uuid") //keyに対してvalueの設定。汎用的な様々な値を保持できる
       .sign(Algorithm.HMAC256(secretKey)); // 利用アルゴリズムを指定してJWTを新規作成
   }
 
