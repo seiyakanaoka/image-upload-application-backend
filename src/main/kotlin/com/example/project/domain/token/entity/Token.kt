@@ -10,7 +10,7 @@ import lombok.Data
 data class Token(
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  var id: Long,
+  var id: String,
   val token: String,
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_id")

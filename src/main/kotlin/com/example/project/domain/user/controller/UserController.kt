@@ -27,7 +27,6 @@ class UserController(private val userService: UserService) {
    * */
   @GetMapping("/user/{id}/tokens")
   fun userTokens(@PathVariable id: Long) {
-    println("通った？ : $id")
     userService.getUserTokens(id)
   }
 }
