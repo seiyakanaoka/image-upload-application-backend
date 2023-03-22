@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.amazonaws.services.s3.model.ObjectMetadata
 import com.amazonaws.services.s3.model.PutObjectRequest
 import com.example.project.config.aws.AwsS3Config
+import com.example.project.domain.aws.s3.dto.AwsS3DTO
 import com.example.project.domain.aws.s3.entity.AwsS3
 import com.example.project.domain.aws.s3.repository.AwsS3Repository
 import org.springframework.beans.factory.annotation.Value
@@ -27,12 +28,12 @@ class AwsS3Service(private val awsS3Config: AwsS3Config, private val awsS3Reposi
    * @param objectKey オブジェクトキー名
    * @param expirationDate 有効期限(指定しなかった場合、1時間を有効期限とする)
    * */
-  fun getImageURL(objectKey: String, expirationDate: Date = Date(System.currentTimeMillis() + 3600000)): String {
+  fun getImageURL(objectKey: String, expirationDate: Date = Date(System.currentTimeMillis() + 3600000)): AwsS3DTO {
     val imageUrlRequest = GeneratePresignedUrlRequest(bucketName, objectKey)
       .withExpiration(expirationDate)
     val url: URL = s3Client.generatePresignedUrl(imageUrlRequest)
     s3Client.shutdown()
-    return url.toString()
+    return AwsS3DTO(url.toString())
   }
 
   /**
