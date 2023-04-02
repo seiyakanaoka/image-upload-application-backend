@@ -7,6 +7,7 @@ import com.example.project.config.aws.AwsS3Config
 import com.example.project.domain.aws.s3.dto.AwsS3DTO
 import com.example.project.domain.aws.s3.entity.AwsS3
 import com.example.project.domain.aws.s3.repository.AwsS3Repository
+import com.example.project.domain.user.entity.User
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Service
 import org.springframework.web.multipart.MultipartFile
@@ -21,6 +22,25 @@ class AwsS3Service(private val awsS3Config: AwsS3Config, private val awsS3Reposi
 
   @Value("\${aws.s3.image.bucketName}")
   private val bucketName = ""
+
+  /**
+   * ユーザーが保存した画像一覧を取得する
+   * @param id userId
+   * */
+  fun getImages(id: Long): List<AwsS3DTO> {
+    val expirationDate = Date(System.currentTimeMillis() + 3600000)
+    val userImages = awsS3Repository.findByUserId(id)
+    val list = userImages.map { it ->
+      AwsS3DTO(
+        s3Client.generatePresignedUrl(
+          GeneratePresignedUrlRequest(bucketName, it.imageUrl)
+            .withExpiration(expirationDate)
+        ).toString()
+      )
+    }
+    s3Client.shutdown()
+    return list
+  }
 
   /**
    * S3の指定したバケットの画像urlを取得する
@@ -53,7 +73,7 @@ class AwsS3Service(private val awsS3Config: AwsS3Config, private val awsS3Reposi
     val request = PutObjectRequest(bucketName, objectKey, inputStream, metadata)
     s3Client.putObject(request)
     s3Client.shutdown()
-    val awsS3 = AwsS3(0, objectKey)
+    val awsS3 = AwsS3(0, objectKey, User(1, "kanaokaseiya@gmail.com", "kanaokaseiya"))
     awsS3Repository.save(awsS3)
   }
 }
