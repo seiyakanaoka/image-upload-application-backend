@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface AwsS3Repository : JpaRepository<AwsS3, Long> {
+  fun findByUserId(id: Long): List<AwsS3>
 }
