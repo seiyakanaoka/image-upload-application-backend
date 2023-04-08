@@ -4,9 +4,11 @@ import com.example.project.domain.token.dto.TokenDto
 import com.example.project.domain.token.entity.Token
 import com.example.project.domain.token.service.TokenService
 import com.example.project.domain.user.entity.User
+import com.example.project.domain.user.form.UserForm
 import com.example.project.domain.user.repository.UserRepository
 import com.example.project.exception.UserNotExistsException
 import com.example.project.util.JWTUtil
+import com.example.project.util.LoginUtil
 import lombok.RequiredArgsConstructor
 import org.springframework.stereotype.Service
 import java.util.*
@@ -20,7 +22,7 @@ class UserService(
   /**
    * ユーザーを取得する
    * */
-  fun getUser(user: User): User? = userRepository.findByEmailAndPassword(user.email, user.password)
+  fun getUser(email: String): User? = userRepository.findByEmail(email)
 
 
   /**
@@ -28,9 +30,8 @@ class UserService(
    * */
   fun createCertification(user: User): TokenDto {
     val uuid = UUID.randomUUID().toString()
-    val existUser = getUser(user) ?: throw UserNotExistsException(400, "ユーザーが存在しません。新規登録してください。")
-    val jwtToken = JWTUtil().createJWTToken(existUser)
-    val token = Token(uuid, jwtToken, existUser)
+    val jwtToken = JWTUtil().createJWTToken(user)
+    val token = Token(uuid, jwtToken, user)
     tokenService.saveToken(token)
     return TokenDto(jwtToken)
   }
@@ -41,5 +42,18 @@ class UserService(
    * */
   fun getUserTokens(id: Long): List<Token> {
     return userRepository.findUserAndTokens(id)
+  }
+
+  /**
+   * ログイン可能か判定する
+   * */
+  fun isPossibleLogin(userForm: UserForm): TokenDto {
+    val existUser = getUser(userForm.email) ?: throw UserNotExistsException(400, "ユーザーが存在しません。新規登録してください。")
+    val loginUtil = LoginUtil()
+    val hash = loginUtil.hashString(userForm.password + existUser.passwordSalt)
+    if (hash != existUser.passwordHash) {
+      throw RuntimeException("パスワードが不正です")
+    }
+    return createCertification(existUser)
   }
 }
